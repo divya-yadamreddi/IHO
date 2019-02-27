@@ -11,12 +11,26 @@ import SceneKit
 import ARKit
 
 class ViewController: UIViewController, ARSCNViewDelegate {
-
+    
     @IBOutlet var sceneView: ARSCNView!
+    
+    func addPaperPlane(x: Float = 0, y: Float = 0, z: Float = -0.5) {
+        guard let paperPlaneScene = SCNScene(named: "paperPlane.scn"),
+            let paperPlaneNode = paperPlaneScene.rootNode.childNode(withName: "paperPlane", recursively: true) else { return }
+        paperPlaneNode.position = SCNVector3(x, y, z)
+        sceneView.scene.rootNode.addChildNode(paperPlaneNode)
+        
+    }
+    
+    func configureLighting() {
+        sceneView.autoenablesDefaultLighting = true
+        sceneView.automaticallyUpdatesLighting = true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+        configureLighting()
+        addPaperPlane()
         
         // Set the view's delegate
         sceneView.delegate = self
@@ -48,7 +62,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneARButton.setTitle("Touch Model Button", for: .normal)
         // set the color of the title
         sceneARButton.setTitleColor(UIColor.white, for: .normal)
-    
+        
         //adding the button to the view
         sceneView.addSubview(sceneARButton)
         
@@ -64,7 +78,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
-
+        
         // Run the view's session
         sceneView.session.run(configuration)
         
@@ -73,9 +87,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if #available(iOS 11, *){
-        let alertController = UIAlertController(title: "IOS Version", message: "Congratulations!!Your IOS version is compatible with Augmented Reality Feature", preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-        present(alertController, animated: true, completion: nil)
+            let alertController = UIAlertController(title: "IOS Version", message: "Congratulations!!Your IOS version is compatible with Augmented Reality Feature", preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+            present(alertController, animated: true, completion: nil)
         }
         else
         {
@@ -84,7 +98,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             present(alertController, animated: true, completion: nil)
         }
     }
-        
+    
     
 }
 
