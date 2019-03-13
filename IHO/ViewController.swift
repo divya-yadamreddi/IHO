@@ -14,23 +14,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     @IBOutlet var sceneView: ARSCNView!
     
-    func addPaperPlane(x: Float = 0, y: Float = 0, z: Float = -0.5) {
-        guard let paperPlaneScene = SCNScene(named: "paperPlane.scn"),
-            let paperPlaneNode = paperPlaneScene.rootNode.childNode(withName: "paperPlane", recursively: true) else { return }
-        paperPlaneNode.position = SCNVector3(x, y, z)
-        sceneView.scene.rootNode.addChildNode(paperPlaneNode)
-        
-    }
-    
-    func configureLighting() {
-        sceneView.autoenablesDefaultLighting = true
-        sceneView.automaticallyUpdatesLighting = true
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureLighting()
-        addPaperPlane()
         
         // Set the view's delegate
         sceneView.delegate = self
@@ -71,6 +56,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Set the scene to the view
         sceneView.scene = scene
+        addPlane()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -97,6 +83,25 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             present(alertController, animated: true, completion: nil)
         }
+    }
+    
+    private func addPlane() {
+        // 1.
+        let scene = SCNScene(named: "art.scnassets/plane_banner.scn")!
+        let planeNode = scene.rootNode.childNode(withName: "planeBanner", recursively: true)
+        
+        // 2.
+        planeNode?.scale = .init(0.05, 0.05, 0.05)
+        
+        // 3.
+        let bannerNode = planeNode?.childNode(withName: "banner", recursively: true)
+        
+        // Find banner material and update its diffuse contents:
+        let bannerMaterial = bannerNode?.geometry?.materials.first(where: { $0.name == "logo" })
+        bannerMaterial?.diffuse.contents = UIImage(named: "next_reality_logo")
+        
+        // 4.
+        self.sceneView.scene.rootNode.addChildNode(planeNode!)
     }
     
     
